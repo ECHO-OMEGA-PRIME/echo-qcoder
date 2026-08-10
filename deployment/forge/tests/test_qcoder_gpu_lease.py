@@ -6,6 +6,8 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
+from urllib.error import URLError
 
 
 MODULE_PATH = Path(__file__).parents[1] / "qcoder_gpu_lease.py"
@@ -218,6 +220,74 @@ class SystemPlatformMaskTests(unittest.TestCase):
         )
         self.assertLess(daemon_reload_index, first_start_index)
         self.assertFalse(any(command[1:2] == ["unmask"] for command in self.platform.commands))
+
+    def test_clear_qwen_uses_bounded_http_readiness_not_hanging_ollama_cli(self) -> None:
+        platform = self.module.SystemPlatform()
+        commands: list[list[str]] = []
+
+        def record(command, *, timeout=None, check=True):
+            command = list(command)
+            commands.append(command)
+            stdout = "running\n" if command[:3] == ["docker", "inspect", "-f"] else ""
+            return subprocess.CompletedProcess(command, 0, stdout=stdout, stderr="")
+
+        platform._run = record
+        tags = mock.MagicMock()
+        tags.status = 200
+        tags.__enter__.return_value = tags
+        tags.__exit__.return_value = False
+        processes = mock.MagicMock()
+        processes.status = 200
+        processes.read.return_value = b'{"models":[]}'
+        processes.__enter__.return_value = processes
+        processes.__exit__.return_value = False
+
+        with (
+            mock.patch.object(
+                self.module.urllib.request,
+                "urlopen",
+                side_effect=[URLError("warming"), tags, processes],
+            ) as urlopen,
+            mock.patch.object(self.module.time, "sleep"),
+        ):
+            platform.clear_qwen()
+
+        self.assertTrue(any(command[:2] == ["docker", "restart"] for command in commands))
+        self.assertFalse(any(command[:4] == ["docker", "exec", "echo-ollama", "ollama"] for command in commands))
+        self.assertEqual(urlopen.call_args_list[0].args[0], "http://127.0.0.1:11434/api/tags")
+        self.assertEqual(urlopen.call_args_list[-1].args[0], "http://127.0.0.1:11434/api/ps")
+
+    def test_clear_qwen_refuses_when_api_reports_qcoder_still_loaded(self) -> None:
+        platform = self.module.SystemPlatform()
+        platform._run = lambda command, **kwargs: subprocess.CompletedProcess(
+            list(command), 0, stdout="", stderr=""
+        )
+        tags = mock.MagicMock()
+        tags.status = 200
+        tags.__enter__.return_value = tags
+        tags.__exit__.return_value = False
+        processes = mock.MagicMock()
+        processes.status = 200
+        processes.read.return_value = b'{"models":[{"name":"c3po-code:qcoder-32k"}]}'
+        processes.__enter__.return_value = processes
+        processes.__exit__.return_value = False
+
+        with mock.patch.object(
+            self.module.urllib.request,
+            "urlopen",
+            side_effect=[tags, processes],
+        ):
+            with self.assertRaisesRegex(self.module.PlatformError, "remained loaded"):
+                platform.clear_qwen()
+
+    def test_runtime_smoke_uses_bounded_ollama_http_inventory(self) -> None:
+        smoke = (MODULE_PATH.parent / "smoke-qcoder-gpu-lease.sh").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertNotIn("docker exec echo-ollama ollama ps", smoke)
+        self.assertIn("http://127.0.0.1:11434/api/ps", smoke)
+        self.assertIn("--max-time 5", smoke)
 
 
 if __name__ == "__main__":

@@ -331,17 +331,22 @@ class SystemPlatform:
             ["docker", "restart", "-t", "10", "echo-ollama"],
             timeout=self.ollama_restart_timeout,
         )
-        # Poll Ollama itself instead of Docker's coarse 30-second health
-        # scheduler. The CLI becomes usable well before the next health tick.
+        # Poll Ollama's bounded HTTP API instead of invoking `ollama list`
+        # inside the container. During a cold dual-GPU restart the CLI can
+        # block beyond its command timeout even after Docker reports healthy;
+        # that exception used to abort lease release and strand production
+        # services offline. The HTTP endpoint has an explicit three-second
+        # socket bound and is the same API the QCoder client will use.
         deadline = time.monotonic() + 75
         while time.monotonic() < deadline:
-            ready = self._run(
-                ["docker", "exec", "echo-ollama", "ollama", "list"],
-                check=False,
-                timeout=10,
-            )
-            if ready.returncode == 0:
-                break
+            try:
+                with urllib.request.urlopen(
+                    "http://127.0.0.1:11434/api/tags", timeout=3
+                ) as response:
+                    if response.status == 200:
+                        break
+            except (urllib.error.URLError, TimeoutError):
+                pass
             state = self._run(
                 ["docker", "inspect", "-f", "{{.State.Status}}", "echo-ollama"],
                 check=False,
@@ -351,8 +356,25 @@ class SystemPlatform:
             time.sleep(1)
         else:
             raise PlatformError("Ollama API did not become ready after restart")
-        loaded = self._run(["docker", "exec", "echo-ollama", "ollama", "ps"]).stdout
-        if "c3po-code" in loaded:
+
+        try:
+            with urllib.request.urlopen(
+                "http://127.0.0.1:11434/api/ps", timeout=3
+            ) as response:
+                if response.status != 200:
+                    raise PlatformError(
+                        f"Ollama process inventory returned HTTP {response.status}"
+                    )
+                process_inventory = json.load(response)
+        except (urllib.error.URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
+            raise PlatformError(f"Ollama process inventory unavailable: {exc}") from exc
+        models = process_inventory.get("models", []) if isinstance(process_inventory, dict) else []
+        loaded_names = [
+            str(model.get("name") or model.get("model") or "")
+            for model in models
+            if isinstance(model, dict)
+        ]
+        if any("c3po-code" in name for name in loaded_names):
             raise PlatformError("QCoder model remained loaded after Ollama restart")
 
     def resume_services(self, original_state: dict[str, bool]) -> None:
