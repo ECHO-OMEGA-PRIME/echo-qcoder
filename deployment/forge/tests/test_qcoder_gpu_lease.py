@@ -267,7 +267,7 @@ class SystemPlatformMaskTests(unittest.TestCase):
         tags.__exit__.return_value = False
         processes = mock.MagicMock()
         processes.status = 200
-        processes.read.return_value = b'{"models":[{"name":"c3po-code:qcoder-32k"}]}'
+        processes.read.return_value = b'{"models":[{"name":"c3po-code:qcoder-64k"}]}'
         processes.__enter__.return_value = processes
         processes.__exit__.return_value = False
 

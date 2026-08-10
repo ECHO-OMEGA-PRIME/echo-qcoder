@@ -55,7 +55,7 @@ The installer validates the pinned manifest first, uses exact package versions, 
 
 ## Runtime boundaries
 
-The active `huihui_ai/Qwen3.6-abliterated:27b` runtime is exposed to QCoder as `c3po-code:qcoder-32k` and holds the FORGE two-GPU coding lease. The derivative preserves `c3po-code:latest`, changes only the context parameter, and is reproducible with `deployment/forge/provision-qcoder-model.sh`. Live verification showed a 32,768-token context and full 18.64 GB model residency across the two 16 GB GPUs. Vision, OCR, hearing, voice, and security scanners remain services or separately authorized sidecars. The ChatGPT plugin continues to use `qwen-plugin-settings.json`, where MCP, shell, web fetch, and sub-agent spawning are denied; only direct local QCoder sessions receive the bounded Serena profile in `qwen-settings.json`.
+The active `huihui_ai/Qwen3.6-abliterated:27b` runtime is exposed to QCoder as `c3po-code:qcoder-64k` and holds the FORGE two-GPU coding lease. The derivative preserves `c3po-code:latest`, changes only the context parameter, and is reproducible with `deployment/forge/provision-qcoder-model.sh`. The 65,536-token profile replaces the exhausted 32K profile, which reached exactly 32,768 tokens during governed startup before repository implementation began. Vision, OCR, hearing, voice, and security scanners remain services or separately authorized sidecars. The ChatGPT plugin continues to use `qwen-plugin-settings.json`, where MCP, shell, web fetch, and sub-agent spawning are denied; only direct local QCoder sessions receive the bounded Serena profile in `qwen-settings.json`.
 
 ## Recurring self-maintenance
 

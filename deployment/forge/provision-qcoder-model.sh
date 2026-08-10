@@ -3,8 +3,8 @@ set -Eeuo pipefail
 
 container=${OLLAMA_CONTAINER:-echo-ollama}
 source_model=${QCODER_SOURCE_MODEL:-c3po-code:latest}
-target_model=${QCODER_MODEL:-c3po-code:qcoder-32k}
-context_length=${QCODER_CONTEXT_LENGTH:-32768}
+target_model=${QCODER_MODEL:-c3po-code:qcoder-64k}
+context_length=${QCODER_CONTEXT_LENGTH:-65536}
 
 if [[ ! "$container" =~ ^[A-Za-z0-9_.-]+$ ]]; then
   printf 'invalid Ollama container name\n' >&2
