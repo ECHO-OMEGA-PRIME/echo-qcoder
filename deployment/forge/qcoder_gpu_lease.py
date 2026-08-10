@@ -345,7 +345,7 @@ class SystemPlatform:
                 ) as response:
                     if response.status == 200:
                         break
-            except (urllib.error.URLError, TimeoutError):
+            except (urllib.error.URLError, TimeoutError, OSError):
                 pass
             state = self._run(
                 ["docker", "inspect", "-f", "{{.State.Status}}", "echo-ollama"],

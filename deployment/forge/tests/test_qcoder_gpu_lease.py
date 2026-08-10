@@ -7,7 +7,6 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
-from urllib.error import URLError
 
 
 MODULE_PATH = Path(__file__).parents[1] / "qcoder_gpu_lease.py"
@@ -246,7 +245,7 @@ class SystemPlatformMaskTests(unittest.TestCase):
             mock.patch.object(
                 self.module.urllib.request,
                 "urlopen",
-                side_effect=[URLError("warming"), tags, processes],
+                side_effect=[ConnectionResetError("warming"), tags, processes],
             ) as urlopen,
             mock.patch.object(self.module.time, "sleep"),
         ):
