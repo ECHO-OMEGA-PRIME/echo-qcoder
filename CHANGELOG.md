@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 - 2026-08-29
+
+- Security-reviewed and re-pinned fifteen drifted upstream HEADs in `config/qcoder-powerpack.json` (prompt set of seven plus eight additional drifts found at review time) so the autonomy-tick `upstream-drift` gate can pass without weakening the validator.
+- Documented the per-upstream diff review in `docs/UPSTREAM_REPIN_REVIEW.md`; no holds; license digests unchanged; installed package exact-versions unchanged; promptfoo remains install-withheld.
+- Hardened `scripts/validate-powerpack.mjs` success-path logging for Node engines without `Object.groupBy`, and added transient-network retries around `git ls-remote` / license fetch without relaxing the exact HEAD or license-digest checks.
+
 ## 0.3.0 - 2026-08-09
 
 - Upgraded and exact-version pinned Qwen Code 0.21.8.

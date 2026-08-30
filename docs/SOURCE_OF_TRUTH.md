@@ -1,6 +1,6 @@
 # QCoder Plugin Source of Truth
 
-Checked: 2026-08-09T13:32:30-05:00 (America/Chicago)
+Checked: 2026-08-29T21:40:55-05:00 (America/Chicago)
 
 ## Official OpenAI documentation reviewed
 
@@ -35,7 +35,7 @@ The system-monitor example is the closest match because QCoder renders a live pr
 
 ## Qwen and capability repositories reviewed
 
-Current upstream repository state and license text were checked again on 2026-08-09 before selecting power-ups. Exact commits and license SHA-256 values are machine-readable in `config/qcoder-powerpack.json`:
+Current upstream repository state and license text were re-validated on 2026-08-29 during a security-gated autonomy-tick re-pin (see `docs/UPSTREAM_REPIN_REVIEW.md`). Exact commits and license SHA-256 values are machine-readable in `config/qcoder-powerpack.json`:
 
 - [Qwen Code](https://github.com/QwenLM/qwen-code) for terminal skills, checkpoints, subagents, MCP, review, and provider compatibility. The live npm registry selected `@qwen-code/qwen-code` 0.21.8.
 - [Qwen-Agent](https://github.com/QwenLM/Qwen-Agent) for function calling, MCP, RAG, browser, and sandboxed code-interpreter patterns.

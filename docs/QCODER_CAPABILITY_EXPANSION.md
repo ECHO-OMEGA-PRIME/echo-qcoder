@@ -1,6 +1,6 @@
 # QCoder Capability Expansion
 
-Checked: 2026-08-09 (America/Chicago)
+Checked: 2026-08-29 (America/Chicago)
 
 ## Outcome
 
@@ -16,7 +16,7 @@ The installer validates the pinned manifest first, uses exact package versions, 
 
 ## Verified repository set
 
-`config/qcoder-powerpack.json` is the machine-readable source of truth. Every entry pins the repository HEAD checked on 2026-08-09, an MIT or Apache-2.0 license, and the SHA-256 of that license text.
+`config/qcoder-powerpack.json` is the machine-readable source of truth. Every entry pins the repository HEAD last security-reviewed on 2026-08-29 (`docs/UPSTREAM_REPIN_REVIEW.md`), an MIT or Apache-2.0 license, and the SHA-256 of that license text.
 
 | Repository                     | Capability                                                      | Posture            | Result                                                                                         |
 | ------------------------------ | --------------------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------- |

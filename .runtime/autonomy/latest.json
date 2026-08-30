@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-08-30T02:54:30.686Z",
+  "repository": "ECHO-OMEGA-PRIME/echo-qcoder",
+  "ok": true,
+  "failed": [],
+  "checks": [
+    {
+      "name": "upstream-drift",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 13791,
+      "output": "QCODER_POWERPACK_VALID repos=21 integrated=3 installable=1 sidecar=9 reference=8 online=true"
+    },
+    {
+      "name": "root-audit",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 607,
+      "output": "found 0 vulnerabilities"
+    },
+    {
+      "name": "inspector-audit",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 715,
+      "output": "found 0 vulnerabilities"
+    },
+    {
+      "name": "regression-suite",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 4081,
+      "output": "scriptStore.test.ts \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 7\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m tests/redaction.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 11\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m tests/auth.test.ts \u001b[2m(\u001b[22m\u001b[2m6 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 47\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m tests/metadata.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 8\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m tests/processRunner.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 14\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m tests/workspaceRegistry.test.ts \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 11\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m tests/schemas.test.ts \u001b[2m(\u001b[22m\u001b[2m5 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 31\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m tests/sessionService.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 382\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m tests/mcp.integration.test.ts \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 337\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m tests/repository.test.ts \u001b[2m(\u001b[22m\u001b[2m5 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 605\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m10 passed\u001b[39m\u001b[22m\u001b[90m (10)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m34 passed\u001b[39m\u001b[22m\u001b[90m (34)\u001b[39m\n\u001b[2m   Start at \u001b[22m 21:54:27\n\u001b[2m   Duration \u001b[22m 1.12s\u001b[2m (transform 1.77s, setup 0ms, import 2.98s, tests 1.45s, environment 1ms)\u001b[22m\n\n\n> @echo-omega-prime/qcoder-mcp-app@0.3.1 test\n> vitest run\n\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv4.1.10 \u001b[39m\u001b[90m[LOCAL_PATH]\n\n \u001b[32m✓\u001b[39m tests/state.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 4\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m tests/App.test.tsx \u001b[2m(\u001b[22m\u001b[2m4 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 318\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m7 passed\u001b[39m\u001b[22m\u001b[90m (7)\u001b[39m\n\u001b[2m   Start at \u001b[22m 21:54:28\n\u001b[2m   Duration \u001b[22m 1.44s\u001b[2m (transform 156ms, setup 295ms, import 241ms, tests 322ms, environment 1.33s)\u001b[22m\n\n{\n  \"evaluator\": \"deterministic metadata-routing regression; not ChatGPT host evidence\",\n  \"total\": 60,\n  \"activation_accuracy\": 1,\n  \"tool_accuracy\": 1,\n  \"unsafe_activations\": 0,\n  \"mismatches\": []\n}\n\n> echo-qcoder@0.3.1 test:powerpack\n> node --test ./scripts/tests/*.test.mjs && node ./scripts/validate-powerpack.mjs\n\n\u001b[32m✔ autonomy tick covers drift, security, and regression gates \u001b[90m(3.366757ms)\u001b[39m\u001b[39m\n\u001b[32m✔ autonomy summary fails closed and identifies failed gates \u001b[90m(0.287844ms)\u001b[39m\u001b[39m\n\u001b[32m✔ public autonomy evidence redacts credentials and private infrastructure \u001b[90m(0.838674ms)\u001b[39m\u001b[39m\n\u001b[32m✔ scheduled workflow reconciles one persistent autonomy issue \u001b[90m(0.252703ms)\u001b[39m\u001b[39m\n\u001b[32m✔ HAMMER fallback installs a six-hour bounded task with issue reconciliation \u001b[90m(0.191263ms)\u001b[39m\u001b[39m\n\u001b[32m✔ powerpack pins a unique permissive upstream set \u001b[90m(5.052581ms)\u001b[39m\u001b[39m\n\u001b[32m✔ the upstream set includes the autonomous coding lifecycle \u001b[90m(0.527951ms)\u001b[39m\u001b[39m\n\u001b[32m✔ the local profile exposes only the bounded Serena semantic tools \u001b[90m(1.57075ms)\u001b[39m\u001b[39m\n\u001b[32m✔ plain qcoder defaults directly to the cli-build role \u001b[90m(0.352237ms)\u001b[39m\u001b[39m\n\u001b[32m✔ all focused Qwen power skills are packaged \u001b[90m(0.770407ms)\u001b[39m\u001b[39m\n\u001b[32m✔ installer is allowlisted and never pipes remote scripts to a shell \u001b[90m(0.403884ms)\u001b[39m\u001b[39m\n\u001b[32m✔ FORGE model provisioning creates a bounded 32K derivative without replacing the source \u001b[90m(0.360259ms)\u001b[39m\u001b[39m\n\u001b[32m✔ release staging excludes unrelated untracked files \u001b[90m(0.243388ms)\u001b[39m\u001b[39m\n\u001b[32m✔ MCP Inspector switch is not overwritten by a same-name command variable \u001b[90m(0.459457ms)\u001b[39m\u001b[39m\n\u001b[32m✔ repository gates ignore the isolated powerpack runtime \u001b[90m(0.559917ms)\u001b[39m\u001b[39m\n\u001b[32m✔ documented safety annotations match the conservative write-tool definitions \u001b[90m(0.425ms)\u001b[39m\u001b[39m\n\u001b[34mℹ tests 16\u001b[39m\n\u001b[34mℹ suites 0\u001b[39m\n\u001b[34mℹ pass 16\u001b[39m\n\u001b[34mℹ fail 0\u001b[39m\n\u001b[34mℹ cancelled 0\u001b[39m\n\u001b[34mℹ skipped 0\u001b[39m\n\u001b[34mℹ todo 0\u001b[39m\n\u001b[34mℹ duration_ms 85.695543\u001b[39m\nQCODER_POWERPACK_VALID repos=21 integrated=3 installable=1 sidecar=9 reference=8 online=false"
+    }
+  ]
+}

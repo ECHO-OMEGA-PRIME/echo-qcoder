@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { setTimeout as delay } from "node:timers/promises";
 
 const root = resolve(import.meta.dirname, "..");
 const manifestPath = resolve(root, "config/qcoder-powerpack.json");
@@ -11,20 +12,30 @@ const errors = validateManifest(manifest);
 if (process.argv.includes("--online") && errors.length === 0) {
   for (const repository of manifest.repositories) {
     try {
-      const head = execFileSync("git", ["ls-remote", `${repository.source}.git`, "HEAD"], {
-        encoding: "utf8",
-        timeout: 30_000,
-      })
-        .trim()
-        .split(/\s+/u)[0];
+      const head = await withRetries(
+        `git-ls-remote:${repository.id}`,
+        () =>
+          execFileSync("git", ["ls-remote", `${repository.source}.git`, "HEAD"], {
+            encoding: "utf8",
+            timeout: 30_000,
+          })
+            .trim()
+            .split(/\s+/u)[0],
+      );
       if (head !== repository.commit) {
         errors.push(`${repository.id}: HEAD drifted from ${repository.commit} to ${head}`);
       }
 
       const licenseUrl = `https://raw.githubusercontent.com/${repository.repository}/${repository.branch}/${repository.licensePath}`;
-      const response = await fetch(licenseUrl, {
-        headers: { "user-agent": "echo-qcoder-powerpack-validator" },
-        signal: AbortSignal.timeout(30_000),
+      const response = await withRetries(`license-fetch:${repository.id}`, async () => {
+        const result = await fetch(licenseUrl, {
+          headers: { "user-agent": "echo-qcoder-powerpack-validator" },
+          signal: AbortSignal.timeout(30_000),
+        });
+        if ([429, 502, 503, 504].includes(result.status)) {
+          throw new Error(`license fetch returned ${result.status}`);
+        }
+        return result;
       });
       if (!response.ok) {
         errors.push(`${repository.id}: license fetch returned ${response.status}`);
@@ -46,9 +57,13 @@ if (errors.length > 0) {
   console.error(errors.join("\n"));
   process.exitCode = 1;
 } else {
-  const counts = Object.groupBy(manifest.repositories, ({ posture }) => posture);
+  const counts = {};
+  for (const repository of manifest.repositories) {
+    const posture = repository.posture;
+    counts[posture] = (counts[posture] ?? 0) + 1;
+  }
   console.log(
-    `QCODER_POWERPACK_VALID repos=${manifest.repositories.length} integrated=${counts.integrated?.length ?? 0} installable=${counts.installable?.length ?? 0} sidecar=${counts.sidecar?.length ?? 0} reference=${counts.reference?.length ?? 0} online=${process.argv.includes("--online")}`,
+    `QCODER_POWERPACK_VALID repos=${manifest.repositories.length} integrated=${counts.integrated ?? 0} installable=${counts.installable ?? 0} sidecar=${counts.sidecar ?? 0} reference=${counts.reference ?? 0} online=${process.argv.includes("--online")}`,
   );
 }
 
@@ -97,4 +112,38 @@ function validateManifest(value) {
 function safeError(error) {
   const message = error instanceof Error ? error.message : String(error);
   return message.replace(/[\r\n]+/gu, " ").slice(0, 240);
+}
+
+function isTransientNetworkError(error) {
+  const message = safeError(error).toLowerCase();
+  return (
+    message.includes("connection reset") ||
+    message.includes("temporarily unavailable") ||
+    message.includes("timed out") ||
+    message.includes("timeout") ||
+    message.includes("econnreset") ||
+    message.includes("econnrefused") ||
+    message.includes("enotfound") ||
+    message.includes("socket hang up") ||
+    message.includes("network") ||
+    message.includes("503") ||
+    message.includes("502") ||
+    message.includes("429")
+  );
+}
+
+async function withRetries(label, operation, { attempts = 4, baseDelayMs = 750 } = {}) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      if (!isTransientNetworkError(error) || attempt === attempts) break;
+      await delay(baseDelayMs * attempt);
+    }
+  }
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(`${label} failed: ${safeError(lastError)}`);
 }
